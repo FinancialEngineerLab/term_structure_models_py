@@ -1,8 +1,0 @@
-{
-    "python.analysis.extraPaths": [
-        "./cox-ingersoll",
-        "./rendleman-bartter",
-        "./merton",
-        "./vasicek"
-    ]
-}
