@@ -1,20 +1,30 @@
 import numpy as np 
 import pandas as pd 
 import matplotlib.pyplot as plt
+import statsmodels.api as sm
 
 class Vasicek:
-    def __init__(self, speed_of_reversion):
+    def __init__(self):
         self.yield_data = self.get_yield_data()
-        self.a = speed_of_reversion
-        self.b = self.get_long_term_mean()
-        self.t = 10 # years for now 
-        self.num_subprocesses = 50*self.t
+        self.a = self.get_mean_revert()
+        self.miu = self.get_long_term_mean()
+        self.t = 30 # years for now 
+        self.num_subprocesses = 252*self.t
         self.dt = self.t / self.num_subprocesses 
         self.rates = [self.get_current_rate()]
         self.sigma = self.get_volatility()
 
     def get_yield_data(self):
         return list(pd.read_excel('DGS10.xls')['DGS10'].fillna(0))
+
+    def get_mean_revert(self):
+        lag = np.roll(self.yield_data,1)
+        lag[0] = 0
+        ret = self.yield_data - lag
+        ret[0] = 0
+        model = sm.OLS(ret,lag)
+        res = model.fit()
+        return res.params[0]
 
     def get_current_rate(self):
         return self.yield_data[-1]
@@ -28,14 +38,13 @@ class Vasicek:
     
     def vasicek(self):
         for i in range(self.num_subprocesses):
-            self.rates.append(self.rates[-1] + self.a*(self.b - self.rates[-1])*self.dt + self.sigma*np.random.normal())
+            self.rates.append(self.rates[-1] + self.dt*(self.miu - self.a*self.rates[-1]) + self.sigma*np.random.normal())
         return self.rates
     
     def show_rates(self):
         x = range(self.num_subprocesses+1)
-        y = self.vasicek()
-        plt.plot(x,y)
+        for i in range(100):
+            y = self.vasicek()
+            plt.plot(x,y)
+            self.rates = [self.get_current_rate()]
         plt.show()
-
-V = Vasicek(.5)
-V.show_rates()
