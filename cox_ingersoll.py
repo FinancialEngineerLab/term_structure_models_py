@@ -5,11 +5,11 @@ import math
 import statsmodels.api as sm
 
 class CoxIngersoll:
-    def __init__(self):
+    def __init__(self, time):
         self.yield_data = self.get_yield_data()
         self.a = self.get_mean_revert()
         self.b = self.get_long_term_mean()
-        self.t = 30 # years for now 
+        self.t = time 
         self.num_subprocesses = 252*self.t
         self.dt = self.t / self.num_subprocesses 
         self.rates = [self.get_current_rate()]
@@ -48,4 +48,5 @@ class CoxIngersoll:
             y = self.ci()
             plt.plot(x,y)
             self.rates = [self.get_current_rate()]
+        plt.title("Cox-Ingersoll Model")
         plt.show()

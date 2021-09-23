@@ -4,11 +4,11 @@ import matplotlib.pyplot as plt
 import statsmodels.api as sm
 
 class Vasicek:
-    def __init__(self):
+    def __init__(self, time):
         self.yield_data = self.get_yield_data()
         self.a = self.get_mean_revert()
         self.miu = self.get_long_term_mean()
-        self.t = 30 # years for now 
+        self.t = time 
         self.num_subprocesses = 252*self.t
         self.dt = self.t / self.num_subprocesses 
         self.rates = [self.get_current_rate()]
@@ -47,4 +47,5 @@ class Vasicek:
             y = self.vasicek()
             plt.plot(x,y)
             self.rates = [self.get_current_rate()]
+        plt.title('Vasicek Model')
         plt.show()
