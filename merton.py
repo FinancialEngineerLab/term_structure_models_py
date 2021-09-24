@@ -7,7 +7,7 @@ class Merton:
     def __init__(self, time):
         self.yield_data = self.get_yield_data()
         self.miu = self.get_long_term_mean()
-        self.t = time # years for now 
+        self.t = time
         self.num_subprocesses = 252*self.t
         self.dt = self.t / self.num_subprocesses 
         self.rates = [self.get_current_rate()]
