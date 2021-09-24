@@ -7,13 +7,13 @@ from ho_lee import HoLee
 time = 30
 
 V = Vasicek(time)
-# C = CoxIngersoll(time) 
+C = CoxIngersoll(time) 
 # M = Merton(time)
 # R = RB(time) 
 # H = HoLee(time)
 
 V.show_rates()
-# C.show_rates()
+C.show_rates()
 
 # M.show_rates()
 # R.show_rates()

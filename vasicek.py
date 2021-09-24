@@ -48,10 +48,10 @@ class Vasicek:
 
     def get_yield_data(self):
         data = list(pd.read_excel('DGS10.xls')['DGS10'])
-        for i in range(-365, 0):
+        for i in range(len(data)):
             if data[i] == 0:
                 data[i] = data[i-1]
-        return data[-365:]
+        return data
     
     def find_interest_rate_diff(self):
         rates = list(self.yield_data)

@@ -22,7 +22,6 @@ class CoxIngersoll:
         self.num_subprocesses = 252*self.t
         self.dt = self.t / self.num_subprocesses 
         self.rates = [self.get_current_rate()]
-        print(self.a, self.b, self.sigma)
 
     def normpdf(self, x, mean, sd):
         var = float(sd)**2
@@ -44,11 +43,15 @@ class CoxIngersoll:
     
     def find_params(self):
         x0 = [self.a, self.b, self.sigma]
-        res = minimize(self.minimization_function, x0, method='Nelder-Mead')
+        res = minimize(self.minimization_function, x0, method='Nelder-Mead',bounds=[(-5,5),(-5,5),(0.0001,5)])
         return res['x']
 
     def get_yield_data(self):
-        return list(pd.read_excel('DGS10.xls')['DGS10'].fillna(0))
+        data = list(pd.read_excel('DGS10.xls')['DGS10'])
+        for i in range(len(data)):
+            if data[i] == 0:
+                data[i] = data[i-1]
+        return data
 
     def find_interest_rate_diff(self):
         rates = list(self.yield_data)
@@ -80,6 +83,3 @@ class CoxIngersoll:
             self.rates = [self.get_current_rate()]
         plt.title("Cox-Ingersoll Model")
         plt.show()
-
-C = CoxIngersoll(30)
-C.show_rates()
